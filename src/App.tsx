@@ -301,12 +301,26 @@ const NAV=[
   {id:"doc-templates",    label:"Document Templates",    icon:"📝"},
   {id:"tasks",            label:"Tasks & Acknowledgements",icon:"✅"},
   {id:"comms",            label:"Communications",        icon:"💬"},
+  {sec:"PAYROLL"},
+  {id:"pay-runs",         label:"Pay Runs",               icon:"💵"},
+  {id:"stp",              label:"Single Touch Payroll",   icon:"📡"},
+  {id:"super",            label:"Super Payments",         icon:"🏦"},
+  {id:"payslips",         label:"Pay Slips",              icon:"🧾"},
+  {id:"expense-claims",   label:"Expense Claims",         icon:"💳"},
+  {id:"expenses-mgmt",    label:"Expenses Management",    icon:"🧮"},
+  {id:"compensation",     label:"Compensation Management",icon:"💰"},
+  {sec:"PEOPLE OPERATIONS"},
+  {id:"engagement",       label:"Engagement",             icon:"📣"},
+  {id:"development",      label:"Development",            icon:"🌱"},
+  {id:"performance",      label:"Performance",            icon:"🎯"},
+  {id:"benefits",         label:"Benefits & Perks",       icon:"🎁"},
   {sec:"SYSTEM"},
   {id:"workflow-designer",label:"Workflow Designer",     icon:"⚙"},
   {id:"reporting",        label:"Reporting & Exports",   icon:"📊"},
   {id:"integrations",     label:"Integrations Hub",      icon:"🔗"},
   {sec:"ADMINISTRATION"},
   {id:"permissions",      label:"Permissions",           icon:"🔒"},
+  {id:"billing",          label:"Billing",               icon:"🏷"},
   {id:"audit",            label:"Audit Log",             icon:"🗒"},
 ];
 
@@ -324,9 +338,73 @@ const PAGE_META={
   onboarding:        {title:"Onboarding Workflows",         sub:"New starter checklist · tax · super · IT provisioning"},
   induction:         {title:"Induction & Training",         sub:"Mandatory training dashboard · completion tracking · certificates"},
   compliance:        {title:"Compliance Tracking",          sub:"WWCC · VIT · Visa · First Aid · risk dashboard · audit trail"},
+  "pay-runs":        {title:"Pay Runs",                     sub:"Fortnightly payroll schedule · draft, review & lodge"},
+  stp:               {title:"Single Touch Payroll",         sub:"Every pay event reported to the ATO · STP Phase 2"},
+  super:             {title:"Super Payments",                sub:"Payday Super · contributions paid every pay day"},
+  payslips:          {title:"Pay Slips",                     sub:"Employee self-service pay slip history"},
+  "expense-claims":  {title:"Expense Claims",                sub:"Staff reimbursement claims · receipts & approvals"},
+  "expenses-mgmt":   {title:"Expenses Management",           sub:"Approve, decline & reconcile staff expense claims"},
+  compensation:      {title:"Compensation Management",       sub:"Remuneration reviews · salary bands · approvals"},
+  engagement:        {title:"Engagement",                    sub:"Recognition, values, surveys & exit interviews"},
+  development:       {title:"Development",                   sub:"1:1 coaching conversations & peer feedback"},
+  performance:       {title:"Performance",                   sub:"Goals · 360 reviews · performance reviews · 9-box grid"},
+  benefits:          {title:"Benefits & Perks",               sub:"Benefits, reward points & staff discount marketplace"},
+  billing:           {title:"Billing",                        sub:"Platform subscription & invoice history"},
   permissions:       {title:"Permission Management",        sub:"Role-based access control · 94 atomic permissions"},
   audit:             {title:"Audit Log",                    sub:"Immutable activity trail · AI-decision & data events"},
 };
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHARED WORKFORCE / PAYROLL DATA
+   (Single roster used by Employee Records AND the Payroll module —
+    extended with award / rate / super fund / pay status fields.)
+═══════════════════════════════════════════════════════════════════ */
+const EMPLOYEES=[
+  {id:"EMP-0412",name:"Maryam Iqbal",role:"Primary Teacher",dept:"Primary",fte:"1.0",type:"Ongoing",start:"22 Jan 2021",mgr:"Head of Primary",status:"Active",por:["Year 5 Coordinator"],idx:1,
+   award:"Teachers EA",rate:"$98,400 / yr",fund:"Aware Super",payStatus:"Active"},
+  {id:"EMP-0398",name:"Fatima Nasser",role:"Wellbeing Coordinator",dept:"Wellbeing",fte:"0.8",type:"Ongoing",start:"10 Feb 2020",mgr:"Deputy Principal",status:"Active",por:["Child Safety Officer","First Aid Lead"],idx:2,
+   award:"Support Staff Award",rate:"$58,000 / yr",fund:"REST",payStatus:"Active"},
+  {id:"EMP-0377",name:"Ahmed Khan",role:"IT Operations Lead",dept:"Operations",fte:"1.0",type:"Ongoing",start:"05 Jul 2019",mgr:"Business Manager",status:"Active",por:["ICT Coordinator"],idx:3,
+   award:"Support Staff Award",rate:"$86,000 / yr",fund:"AustralianSuper",payStatus:"Active"},
+  {id:"EMP-0440",name:"Hassan Malik",role:"Mathematics Teacher",dept:"Secondary",fte:"1.0",type:"Fixed-Term",start:"28 Jan 2025",mgr:"Head of Secondary",status:"Active",por:[],idx:1,
+   award:"Teachers EA",rate:"$92,100 / yr",fund:"HESTA",payStatus:"Active"},
+  {id:"EMP-0356",name:"Rania Hadid",role:"Head of Secondary",dept:"Secondary",fte:"1.0",type:"Ongoing",start:"14 Jan 2018",mgr:"Principal",status:"Active",por:["Head of Secondary","Timetabling Lead"],idx:4,
+   award:"Leadership EA",rate:"$132,500 / yr",fund:"UniSuper",payStatus:"Active"},
+  {id:"EMP-0291",name:"Omar Aziz",role:"Primary Teacher",dept:"Primary",fte:"0.6",type:"Part-Time",start:"03 Feb 2022",mgr:"Head of Primary",status:"On Leave",por:[],idx:5,
+   award:"Teachers EA",rate:"$58.10 / hr",fund:"Aware Super",payStatus:"On Hold"},
+];
+
+const PAYRUNS=[
+  {period:"Fortnight ending 12 Jul 2026",pay:"14 Jul 2026",status:"Draft",emps:218,gross:412600},
+  {period:"Fortnight ending 28 Jun 2026",pay:"30 Jun 2026",status:"STP Lodged",emps:216,gross:409800},
+  {period:"Fortnight ending 14 Jun 2026",pay:"16 Jun 2026",status:"STP Lodged",emps:215,gross:407200},
+  {period:"Fortnight ending 31 May 2026",pay:"02 Jun 2026",status:"STP Lodged",emps:214,gross:404900},
+  {period:"Fortnight ending 17 May 2026",pay:"19 May 2026",status:"STP Lodged",emps:214,gross:403100},
+];
+
+const SUPER_FUNDS=[
+  {fund:"AustralianSuper",employees:62,amount:29760},
+  {fund:"Aware Super",    employees:58,amount:27840},
+  {fund:"HESTA",          employees:41,amount:19680},
+  {fund:"UniSuper",       employees:24,amount:11520},
+  {fund:"REST",           employees:20,amount:9600},
+  {fund:"Hostplus",       employees:13,amount:6240},
+];
+
+const money=(n:number)=>"$"+Math.round(n).toLocaleString("en-AU");
+
+/* small inline-SVG trend chart — no chart-library dependency */
+function TrendChart({data,color=C.accent,height=110}:{data:number[];color?:string;height?:number}){
+  const w=100,min=Math.min(...data),max=Math.max(...data),range=(max-min)||1;
+  const pts=data.map((v,i)=>`${(i/(data.length-1))*w},${height-((v-min)/range)*(height-14)-6}`).join(" ");
+  const areaPts=`0,${height} ${pts} ${w},${height}`;
+  return(
+    <svg viewBox={`0 0 ${w} ${height}`} preserveAspectRatio="none" style={{width:"100%",height,display:"block"}}>
+      <polygon points={areaPts} fill={color} opacity={0.12}/>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth={1.6} vectorEffect="non-scaling-stroke"/>
+    </svg>
+  );
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    PAGE: DASHBOARD
@@ -2113,14 +2191,7 @@ function PageVisa(){
 function PageEmployees(){
   const [tab,setTab]=useState("profiles");
   const [drawer,setDrawer]=useState(null);
-  const emps=[
-    {id:"EMP-0412",name:"Maryam Iqbal",role:"Primary Teacher",dept:"Primary",fte:"1.0",type:"Ongoing",start:"22 Jan 2021",mgr:"Head of Primary",status:"Active",por:["Year 5 Coordinator"],idx:1},
-    {id:"EMP-0398",name:"Fatima Nasser",role:"Wellbeing Coordinator",dept:"Wellbeing",fte:"0.8",type:"Ongoing",start:"10 Feb 2020",mgr:"Deputy Principal",status:"Active",por:["Child Safety Officer","First Aid Lead"],idx:2},
-    {id:"EMP-0377",name:"Ahmed Khan",role:"IT Operations Lead",dept:"Operations",fte:"1.0",type:"Ongoing",start:"05 Jul 2019",mgr:"Business Manager",status:"Active",por:["ICT Coordinator"],idx:3},
-    {id:"EMP-0440",name:"Hassan Malik",role:"Mathematics Teacher",dept:"Secondary",fte:"1.0",type:"Fixed-Term",start:"28 Jan 2025",mgr:"Head of Secondary",status:"Active",por:[],idx:1},
-    {id:"EMP-0356",name:"Rania Hadid",role:"Head of Secondary",dept:"Secondary",fte:"1.0",type:"Ongoing",start:"14 Jan 2018",mgr:"Principal",status:"Active",por:["Head of Secondary","Timetabling Lead"],idx:4},
-    {id:"EMP-0291",name:"Omar Aziz",role:"Primary Teacher",dept:"Primary",fte:"0.6",type:"Part-Time",start:"03 Feb 2022",mgr:"Head of Primary",status:"On Leave",por:[],idx:5},
-  ];
+  const emps=EMPLOYEES;
   const sel=drawer&&emps.find(e=>e.id===drawer);
   const arrangements=[
     {name:"Omar Aziz",idx:5,change:"FTE 1.0 → 0.6",reason:"Parental leave arrangement",eff:"01 Jul 2026",notified:["Timetabling","Payroll","Daily Organiser"],status:"Approved"},
@@ -2226,6 +2297,10 @@ function PageEmployees(){
             <div className="drawer-bd">
               <div className="drawer-section">EMPLOYMENT DETAILS</div>
               {[["Department",sel.dept],["FTE",sel.fte],["Employment Type",sel.type],["Start Date",sel.start],["Reports To",sel.mgr]].map(([k,v])=>(
+                <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid ${C.border2}`,fontSize:12}}><span style={{color:C.textSub}}>{k}</span><span style={{fontWeight:700}}>{v}</span></div>
+              ))}
+              <div className="drawer-section">PAYROLL</div>
+              {[["Award / Agreement",sel.award],["Base Rate",sel.rate],["Super Fund",sel.fund],["Pay Status",sel.payStatus]].map(([k,v])=>(
                 <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid ${C.border2}`,fontSize:12}}><span style={{color:C.textSub}}>{k}</span><span style={{fontWeight:700}}>{v}</span></div>
               ))}
               <div className="drawer-section">POSITIONS OF RESPONSIBILITY</div>
@@ -2431,6 +2506,848 @@ function PageComms(){
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHARED: WIZARD STEPPER
+═══════════════════════════════════════════════════════════════════ */
+function Stepper({step,steps}:{step:number;steps:string[]}){
+  return(
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:20}}>
+      {steps.map((label,i)=>{
+        const n=i+1,done=n<step,active=n===step;
+        return(
+          <div key={label} style={{display:"flex",alignItems:"center",gap:8,flex:i<steps.length-1?1:"initial"}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div style={{width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,flexShrink:0,background:done?C.green:active?C.accent:"#ededf0",color:done||active?"#fff":C.textSub}}>{done?"✓":n}</div>
+              <span style={{fontSize:12,fontWeight:700,color:active?C.text:C.textMute,whiteSpace:"nowrap"}}>{label}</span>
+            </div>
+            {i<steps.length-1&&<div style={{flex:1,height:1,background:C.border,minWidth:14}}/>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: PAY RUNS
+═══════════════════════════════════════════════════════════════════ */
+function PagePayRuns(){
+  const [wizard,setWizard]=useState(false);
+  const [step,setStep]=useState(1);
+  const [declared,setDeclared]=useState(false);
+  const run=PAYRUNS[0];
+  const steps=["Period","Earnings","Tax & Super","Review","Done"];
+  const gross=run.gross,payg=Math.round(gross*0.25),super_=Math.round(gross*0.115),net=gross-payg;
+  const preview=EMPLOYEES.slice(0,6).map((e,i)=>({name:e.name,role:e.role,gross:Math.round((gross/run.emps)*(0.8+(i%3)*0.3)),warn:i===3}));
+
+  const closeWizard=()=>{setWizard(false);setStep(1);setDeclared(false);};
+
+  return(
+    <div className="page-in">
+      <FiltersRow>
+        <SearchBar placeholder="Search pay runs…" width={260}/>
+        <select className="sel"><option>Status  All</option></select>
+        <div style={{marginLeft:"auto",display:"flex",gap:8}}>
+          <button className="btn btn-secondary btn-sm">⬇ Export</button>
+          <button className="btn btn-primary" onClick={()=>setWizard(true)}>+ New Pay Run</button>
+        </div>
+      </FiltersRow>
+
+      <div className="g4" style={{marginBottom:16}}>
+        {[{v:run.pay,l:"Next Payment Date",c:C.goldDark},{v:money(gross),l:"Est. Gross This Cycle",c:C.blue},{v:run.emps,l:"Employees Paid",c:C.teal},{v:money(super_),l:"Super Due This Cycle",c:C.green}].map(s=>(
+          <div key={s.l} className="stat-card"><div className="stat-val" style={{color:s.c,fontSize:typeof s.v==="string"&&s.v.length>8?16:22}}>{s.v}</div><div className="stat-label">{s.l}</div></div>
+        ))}
+      </div>
+
+      <div className="card" style={{marginBottom:16,background:C.sidebar,border:"none"}}>
+        <div className="card-bd" style={{display:"flex",alignItems:"center",gap:14}}>
+          <div style={{width:44,height:44,borderRadius:12,background:"rgba(255,255,255,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>💵</div>
+          <div style={{flex:1}}>
+            <div style={{color:"#f4efe4",fontWeight:800,fontSize:14}}>{run.period}</div>
+            <div style={{color:"rgba(244,239,228,.65)",fontSize:11.5,marginTop:2}}>{run.emps} employees · est. {money(gross)} gross</div>
+          </div>
+          <button className="btn btn-primary btn-sm" onClick={()=>setWizard(true)}>Continue draft →</button>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-hd"><div><div className="card-title">Pay Run History</div><div className="card-sub">Fortnightly schedule · STP Phase 2 lodged automatically</div></div></div>
+        <table className="tbl">
+          <thead><tr><th>PAY PERIOD</th><th>PAYMENT DATE</th><th>EMPLOYEES</th><th>GROSS</th><th>STATUS</th></tr></thead>
+          <tbody>
+            {PAYRUNS.map((r,i)=>(
+              <tr key={i}>
+                <td style={{fontWeight:700,color:C.text}}>{r.period}</td>
+                <td style={{fontSize:11.5,color:C.textSub,fontFamily:"ui-monospace,monospace"}}>{r.pay}</td>
+                <td>{r.emps}</td>
+                <td style={{fontWeight:800}}>{money(r.gross)}</td>
+                <td><span className={`badge ${r.status==="Draft"?"b-gray":"b-green"}`}>{r.status==="STP Lodged"&&<span className="dot dot-g"/>}{r.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {wizard&&(
+        <div className="drawer-overlay" onClick={closeWizard}>
+          <div className="drawer" style={{width:640}} onClick={e=>e.stopPropagation()}>
+            <div className="drawer-hd">
+              <div><div style={{fontSize:15,fontWeight:800}}>New Pay Run — {run.period}</div><div style={{fontSize:11.5,color:C.textSub}}>Step {step} of {steps.length}</div></div>
+              <button className="btn btn-ghost btn-xs" onClick={closeWizard}>✕</button>
+            </div>
+            <div className="drawer-bd">
+              <Stepper step={step} steps={steps}/>
+
+              {step===1&&(
+                <div>
+                  <div style={{fontSize:13,fontWeight:800,marginBottom:4}}>Confirm the pay period</div>
+                  <div style={{fontSize:12,color:C.textSub,marginBottom:14}}>Earnings pull from timesheets; award & EA rates apply automatically.</div>
+                  <div className="form-row">
+                    {[["Pay schedule","Fortnightly"],["Period","29 Jun – 12 Jul 2026"],["Payment date",run.pay],["Employees",`${run.emps} active`]].map(([k,v])=>(
+                      <div key={k} style={{background:C.bg,borderRadius:10,padding:12}}><div style={{fontSize:10.5,color:C.textMute,fontWeight:700,textTransform:"uppercase"}}>{k}</div><div style={{fontSize:13,fontWeight:800,marginTop:3}}>{v}</div></div>
+                    ))}
+                  </div>
+                  <div style={{background:C.greenBg,borderRadius:10,padding:12,display:"flex",gap:8,alignItems:"center",fontSize:12,color:C.greenDk}}><span>🛡</span>Award & enterprise-agreement rates applied automatically by the payroll engine.</div>
+                </div>
+              )}
+
+              {step===2&&(
+                <div>
+                  <div style={{fontSize:13,fontWeight:800,marginBottom:4}}>Review earnings</div>
+                  <div style={{fontSize:12,color:C.textSub,marginBottom:12}}>From timesheets & contracted hours. One item needs attention.</div>
+                  <table className="tbl">
+                    <thead><tr><th>EMPLOYEE</th><th>ROLE</th><th>GROSS</th></tr></thead>
+                    <tbody>
+                      {preview.map((r,i)=>(
+                        <tr key={i} style={{background:r.warn?"#fdf8ec":"transparent"}}>
+                          <td style={{fontWeight:700}}>{r.name}</td>
+                          <td style={{color:C.textSub,fontSize:11.5}}>{r.role}</td>
+                          <td>{r.warn?<span style={{color:C.amberDk,fontWeight:700,fontSize:11.5}}>⚠ timesheet pending</span>:<span style={{fontWeight:700}}>{money(r.gross)}</span>}</td>
+                        </tr>
+                      ))}
+                      <tr><td style={{fontWeight:800}}>+ {run.emps-6} more employees</td><td/><td style={{fontWeight:800}}>{money(gross)} total</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {step===3&&(
+                <div>
+                  <div style={{fontSize:13,fontWeight:800,marginBottom:10}}>Tax, super & deductions</div>
+                  {[["Gross earnings",gross,C.text],["PAYG withholding",-payg,C.red]].map(([k,v,col])=>(
+                    <div key={k as string} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:`1px solid ${C.border2}`,fontSize:12.5}}><span style={{color:C.textSub}}>{k}</span><span style={{fontWeight:800,color:col as string}}>{(v as number)<0?"– "+money(-(v as number)):money(v as number)}</span></div>
+                  ))}
+                  <div style={{display:"flex",justifyContent:"space-between",padding:"10px 0",fontSize:14}}><span style={{fontWeight:800}}>Net pay</span><span style={{fontWeight:800,color:C.greenDk}}>{money(net)}</span></div>
+                  <div style={{background:"rgba(198,163,90,.1)",borderRadius:10,padding:12,display:"flex",gap:10,alignItems:"center",marginTop:8}}>
+                    <span style={{fontSize:20}}>🏦</span>
+                    <div style={{flex:1}}><div style={{fontSize:12,fontWeight:800}}>Superannuation guarantee (11.5%)</div><div style={{fontSize:11,color:C.textSub}}>Paid to each fund on pay day under Payday Super.</div></div>
+                    <div style={{fontWeight:800,color:C.goldDark}}>{money(super_)}</div>
+                  </div>
+                </div>
+              )}
+
+              {step===4&&(
+                <div>
+                  <div style={{fontSize:13,fontWeight:800,marginBottom:12}}>Review & finalise</div>
+                  <div className="g4" style={{marginBottom:14}}>
+                    {[["Gross",money(gross)],["PAYG",money(payg)],["Net pay",money(net)],["Super",money(super_)]].map(([k,v])=>(
+                      <div key={k} style={{background:C.bg,borderRadius:10,padding:"10px 8px",textAlign:"center"}}><div style={{fontSize:10,color:C.textMute}}>{k}</div><div style={{fontSize:14,fontWeight:800,marginTop:2}}>{v}</div></div>
+                    ))}
+                  </div>
+                  <label style={{display:"flex",gap:10,alignItems:"flex-start",padding:12,borderRadius:10,cursor:"pointer",background:declared?C.greenBg:C.bg,border:`1px solid ${declared?"#bfe6cf":C.border}`}}>
+                    <input type="checkbox" checked={declared} onChange={e=>setDeclared(e.target.checked)} style={{marginTop:2}}/>
+                    <span style={{fontSize:12,color:C.text}}>I declare this pay event is true and correct, and authorise its lodgement to the ATO as an <b>STP Phase 2</b> pay event.</span>
+                  </label>
+                </div>
+              )}
+
+              {step===5&&(
+                <div style={{textAlign:"center",padding:"12px 0"}}>
+                  <div style={{fontSize:40,marginBottom:10}}>✓</div>
+                  <div style={{fontSize:16,fontWeight:800}}>Pay run finalised</div>
+                  <div style={{fontSize:12,color:C.textSub,margin:"4px 0 16px"}}>{run.period} · {money(net)} paid to {run.emps} employees</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:8,textAlign:"left"}}>
+                    {[["📡","STP Phase 2 pay event lodged to the ATO"],["🏦",`Super ${money(super_)} scheduled — reaches funds within 7 days`],["🧾",`Pay slips issued to ${run.emps} staff`],["📊","General-ledger journal exported to finance"]].map(([icon,txt])=>(
+                      <div key={txt} style={{display:"flex",gap:10,alignItems:"center",background:C.bg,borderRadius:9,padding:"9px 12px"}}><span>{icon}</span><span style={{fontSize:12}}>{txt}</span></div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div style={{display:"flex",justifyContent:"space-between",marginTop:20,paddingTop:14,borderTop:`1px solid ${C.border}`}}>
+                <button className="btn btn-secondary btn-sm" onClick={()=>step===1?closeWizard():setStep(step-1)}>{step===1?"Cancel":"← Back"}</button>
+                {step<4&&<button className="btn btn-primary btn-sm" onClick={()=>setStep(step+1)}>Continue →</button>}
+                {step===4&&<button className="btn btn-primary btn-sm" disabled={!declared} style={{opacity:declared?1:0.5}} onClick={()=>setStep(5)}>🛡 Finalise & Lodge</button>}
+                {step===5&&<button className="btn btn-primary btn-sm" onClick={closeWizard}>Done</button>}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: SINGLE TOUCH PAYROLL
+═══════════════════════════════════════════════════════════════════ */
+function PageSTP(){
+  const lodged=PAYRUNS.filter(r=>r.status==="STP Lodged");
+  return(
+    <div className="page-in">
+      <FiltersRow>
+        <SearchBar placeholder="Search pay events…" width={260}/>
+        <select className="sel"><option>Period  All</option></select>
+        <div style={{marginLeft:"auto"}}><span className="badge b-green"><span className="dot dot-g"/>Connected to ATO</span></div>
+      </FiltersRow>
+      <div className="g4" style={{marginBottom:16}}>
+        {[{v:lodged.length,l:"Pay Events Lodged",c:C.goldDark},{v:"100%",l:"Acceptance Rate",c:C.green},{v:"STP Phase 2",l:"Reporting Standard",c:C.blue},{v:"0",l:"Discrepancies",c:C.teal}].map(s=>(
+          <div key={s.l} className="stat-card"><div className="stat-val" style={{color:s.c,fontSize:typeof s.v==="string"&&s.v.length>4?16:22}}>{s.v}</div><div className="stat-label">{s.l}</div></div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-hd"><div><div className="card-title">STP Lodgement History</div><div className="card-sub">Every pay event reported to the ATO on pay day</div></div><button className="btn btn-secondary btn-sm">⬇ Export</button></div>
+        <table className="tbl">
+          <thead><tr><th>PAY EVENT</th><th>LODGED</th><th>EMPLOYEES</th><th>GROSS</th><th>STATUS</th></tr></thead>
+          <tbody>
+            {lodged.map((r,i)=>(
+              <tr key={i}>
+                <td style={{fontWeight:700}}>{r.period}</td>
+                <td style={{fontSize:11.5,color:C.textSub,fontFamily:"ui-monospace,monospace"}}>{r.pay}</td>
+                <td>{r.emps}</td>
+                <td style={{fontWeight:800}}>{money(r.gross)}</td>
+                <td><span className="badge b-green"><span className="dot dot-g"/>Accepted</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: SUPER PAYMENTS
+═══════════════════════════════════════════════════════════════════ */
+function PageSuper(){
+  const total=SUPER_FUNDS.reduce((a,f)=>a+f.amount,0);
+  return(
+    <div className="page-in">
+      <FiltersRow>
+        <div style={{fontSize:12.5,color:C.textSub,fontWeight:600}}>Payday Super — contributions paid every pay day</div>
+        <div style={{marginLeft:"auto"}}><button className="btn btn-primary">✉ Pay Super Batch</button></div>
+      </FiltersRow>
+      <div className="g3" style={{marginBottom:16}}>
+        {[{v:money(total),l:"Due This Cycle",c:C.goldDark},{v:"11.5% SG",l:"Statutory Rate",c:C.green},{v:`${SUPER_FUNDS.length} Funds`,l:"Funds Paid",c:C.amber}].map(s=>(
+          <div key={s.l} className="stat-card"><div className="stat-val" style={{color:s.c}}>{s.v}</div><div className="stat-label">{s.l}</div></div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-hd"><div className="card-title">Super Fund Breakdown</div></div>
+        <table className="tbl">
+          <thead><tr><th>FUND</th><th>EMPLOYEES</th><th>AMOUNT</th><th>STATUS</th></tr></thead>
+          <tbody>
+            {SUPER_FUNDS.map(f=>(
+              <tr key={f.fund}>
+                <td style={{fontWeight:700}}>{f.fund}</td>
+                <td>{f.employees}</td>
+                <td style={{fontWeight:800}}>{money(f.amount)}</td>
+                <td><span className="badge b-blue">Scheduled</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: PAY SLIPS
+═══════════════════════════════════════════════════════════════════ */
+function PagePaySlips(){
+  const [empIdx,setEmpIdx]=useState(0);
+  const [open,setOpen]=useState(0);
+  const emp=EMPLOYEES[empIdx];
+  const slips=[
+    {period:"29 Jun – 12 Jul 2026",pay:"14 Jul 2026",gross:3785,net:2842},
+    {period:"15 – 28 Jun 2026",pay:"30 Jun 2026",gross:3785,net:2842},
+    {period:"1 – 14 Jun 2026",pay:"16 Jun 2026",gross:3785,net:2842},
+  ];
+  return(
+    <div className="page-in">
+      <FiltersRow>
+        <div style={{fontSize:12.5,color:C.textSub,fontWeight:600}}>Employee</div>
+        <select className="sel" value={empIdx} onChange={e=>setEmpIdx(Number(e.target.value))}>
+          {EMPLOYEES.map((e,i)=><option key={e.id} value={i}>{e.name}</option>)}
+        </select>
+      </FiltersRow>
+      <div className="card" style={{marginBottom:16}}>
+        <div className="card-bd" style={{display:"flex",alignItems:"center",gap:12}}>
+          <Av name={emp.name} size={44} idx={emp.idx}/>
+          <div style={{flex:1}}><div style={{fontWeight:800,fontSize:14}}>{emp.name}</div><div style={{fontSize:11.5,color:C.textSub}}>{emp.role}</div></div>
+          <span className="badge b-maroon">YTD gross $52,990</span>
+        </div>
+      </div>
+      <div className="g2">
+        <div className="card">
+          <table className="tbl">
+            <thead><tr><th>PAY PERIOD</th><th>PAID</th><th>NET</th></tr></thead>
+            <tbody>
+              {slips.map((s,i)=>(
+                <tr key={i} onClick={()=>setOpen(i)} style={{background:open===i?"rgba(198,163,90,.06)":"transparent"}}>
+                  <td style={{fontWeight:700}}>{s.period}</td>
+                  <td style={{fontSize:11.5,color:C.textSub}}>{s.pay}</td>
+                  <td style={{fontWeight:800,color:C.greenDk}}>{money(s.net)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="card">
+          <div className="card-hd"><div className="card-title">Payslip · {slips[open].period}</div><span className="badge b-green">Paid</span></div>
+          <div className="card-bd">
+            {[["Ordinary hours (76.0)","$3,650.00"],["Leave loading","$135.00"],["PAYG withholding","– $792.00"],["Salary sacrifice super","– $151.00"]].map(([k,v])=>(
+              <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",fontSize:12.5}}><span style={{color:C.textSub}}>{k}</span><span>{v}</span></div>
+            ))}
+            <div style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderTop:`1px solid ${C.border}`,fontWeight:800,fontSize:14}}><span>Net pay</span><span style={{color:C.greenDk}}>$2,842.00</span></div>
+            <div style={{fontSize:11,color:C.textMute}}>Employer super (11.5%) — $435.28 → {emp.fund}</div>
+            <button className="btn btn-secondary btn-sm" style={{marginTop:12}}>⬇ Download PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: EXPENSE CLAIMS
+═══════════════════════════════════════════════════════════════════ */
+function PageExpenseClaims(){
+  const claims=[
+    {emp:"Fatima Nasser",idx:2,date:"1 Jul 2026",cat:"Travel",desc:"Excursion transport",amt:120,status:"Pending"},
+    {emp:"Ahmed Khan",idx:3,date:"24 Jun 2026",cat:"Resources",desc:"Classroom supplies",amt:86,status:"Approved"},
+    {emp:"Rania Hadid",idx:4,date:"12 Jun 2026",cat:"PD",desc:"Conference registration",amt:450,status:"Approved"},
+    {emp:"Omar Aziz",idx:5,date:"5 Jun 2026",cat:"Travel",desc:"Camp mileage reimbursement",amt:64,status:"Declined"},
+  ];
+  const badge=(s:string)=>({Approved:"b-green",Pending:"b-amber",Declined:"b-red"}[s]||"b-gray");
+  return(
+    <div className="page-in">
+      <FiltersRow>
+        <SearchBar placeholder="Search expense claims…" width={260}/>
+        <select className="sel"><option>Status  All</option></select>
+        <div style={{marginLeft:"auto"}}><button className="btn btn-primary">+ New Claim</button></div>
+      </FiltersRow>
+      <div className="g4" style={{marginBottom:16}}>
+        {[{v:money(720),l:"Claimed This Month",c:C.goldDark},{v:1,l:"Pending Approval",c:C.amber},{v:2,l:"Approved",c:C.green},{v:1,l:"Declined",c:C.red}].map(s=>(
+          <div key={s.l} className="stat-card"><div className="stat-val" style={{color:s.c}}>{s.v}</div><div className="stat-label">{s.l}</div></div>
+        ))}
+      </div>
+      <div className="card">
+        <table className="tbl">
+          <thead><tr><th>EMPLOYEE</th><th>DATE</th><th>CATEGORY</th><th>DESCRIPTION</th><th>AMOUNT</th><th>STATUS</th></tr></thead>
+          <tbody>
+            {claims.map((c,i)=>(
+              <tr key={i}>
+                <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={c.emp} size={26} idx={c.idx}/><span style={{fontWeight:700}}>{c.emp}</span></div></td>
+                <td style={{fontSize:11.5,color:C.textSub}}>{c.date}</td>
+                <td><span className="badge b-gray">{c.cat}</span></td>
+                <td style={{color:C.textSub}}>{c.desc}</td>
+                <td style={{fontWeight:800}}>{money(c.amt)}</td>
+                <td><span className={`badge ${badge(c.status)}`}>{c.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: EXPENSES MANAGEMENT
+═══════════════════════════════════════════════════════════════════ */
+function PageExpensesManagement(){
+  const init=[
+    {emp:"Fatima Nasser",idx:2,cat:"Travel",amt:120,notes:"Excursion transport · receipt attached"},
+    {emp:"David Kim",idx:0,cat:"Resources",amt:64,notes:"Classroom supplies · receipt attached"},
+  ];
+  const [queue,setQueue]=useState(init.map(q=>({...q,decided:false as false|"Approved"|"Declined"})));
+  return(
+    <div className="page-in">
+      <FiltersRow>
+        <SearchBar placeholder="Search employees…" width={260}/>
+        <select className="sel"><option>Category  All</option></select>
+      </FiltersRow>
+      <div className="card">
+        <div className="card-hd"><div><div className="card-title">Approval Queue</div><div className="card-sub">Expense claims awaiting a decision</div></div></div>
+        <table className="tbl">
+          <thead><tr><th>EMPLOYEE</th><th>CATEGORY</th><th>AMOUNT</th><th>NOTES</th><th>ACTION</th></tr></thead>
+          <tbody>
+            {queue.map((q,i)=>(
+              <tr key={i}>
+                <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={q.emp} size={26} idx={q.idx}/><span style={{fontWeight:700}}>{q.emp}</span></div></td>
+                <td><span className="badge b-gray">{q.cat}</span></td>
+                <td style={{fontWeight:800}}>{money(q.amt)}</td>
+                <td style={{fontSize:11.5,color:C.textSub}}>{q.notes}</td>
+                <td>
+                  {q.decided?<span className={`badge ${q.decided==="Approved"?"b-green":"b-red"}`}>{q.decided}</span>:(
+                    <div style={{display:"flex",gap:6}}>
+                      <button className="btn btn-success btn-xs" onClick={()=>setQueue(qs=>qs.map((qq,qi)=>qi===i?{...qq,decided:"Approved"}:qq))}>Approve</button>
+                      <button className="btn btn-secondary btn-xs" onClick={()=>setQueue(qs=>qs.map((qq,qi)=>qi===i?{...qq,decided:"Declined"}:qq))}>Decline</button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: COMPENSATION MANAGEMENT
+═══════════════════════════════════════════════════════════════════ */
+function PageCompensation(){
+  const reviews=EMPLOYEES.slice(0,5).map((e,i)=>({emp:e,proposedPct:3,status:i<2?"Approved":"In Review"}));
+  return(
+    <div className="page-in">
+      <FiltersRow>
+        <SearchBar placeholder="Search employees…" width={260}/>
+        <div style={{marginLeft:"auto"}}><button className="btn btn-primary">+ New Review Cycle</button></div>
+      </FiltersRow>
+      <div className="card">
+        <div className="card-hd"><div><div className="card-title">Remuneration Reviews</div><div className="card-sub">Annual EA increment cycle · 2026</div></div></div>
+        <table className="tbl">
+          <thead><tr><th>EMPLOYEE</th><th>AWARD</th><th>CURRENT</th><th>PROPOSED</th><th>CHANGE</th><th>STATUS</th></tr></thead>
+          <tbody>
+            {reviews.map((r,i)=>(
+              <tr key={i}>
+                <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={r.emp.name} size={26} idx={r.emp.idx}/><span style={{fontWeight:700}}>{r.emp.name}</span></div></td>
+                <td style={{color:C.textSub,fontSize:11.5}}>{r.emp.award}</td>
+                <td style={{fontWeight:700}}>{r.emp.rate}</td>
+                <td style={{fontWeight:800,color:C.goldDark}}>+{r.proposedPct}%</td>
+                <td style={{color:C.greenDk,fontWeight:700}}>↑ {r.proposedPct}.0%</td>
+                <td><span className={`badge ${r.status==="Approved"?"b-green":"b-amber"}`}>{r.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: ENGAGEMENT
+═══════════════════════════════════════════════════════════════════ */
+function PageEngagement(){
+  const [tab,setTab]=useState("connect");
+  const posts=[
+    {from:"Rania Hadid",fromIdx:4,to:"Ahmed Khan",body:"huge help getting the new staff laptops imaged before term. Legend!",kudos:12},
+    {from:"Maryam Iqbal",fromIdx:1,to:"Hassan Malik",body:"thank you for covering yard duty at short notice today.",kudos:8},
+    {from:"Fatima Nasser",fromIdx:2,to:"Omar Aziz",body:"the wellbeing morning tea was fantastic. Thank you!",kudos:15},
+  ];
+  const values=[
+    {icon:"🛡",title:"Respect",desc:"We honour every person, culture and belief in our community."},
+    {icon:"🏅",title:"Excellence",desc:"We strive to be our best in learning and in character."},
+    {icon:"✅",title:"Integrity",desc:"We do the right thing, especially when no one is watching."},
+    {icon:"👥",title:"Community",desc:"We grow together and care for one another."},
+  ];
+  const exits=[
+    {name:"Peter Shaw",idx:0,date:"20 Jun 2026",reason:"Relocation",status:"Completed"},
+    {name:"Rita Cohen",idx:2,date:"5 Jun 2026",reason:"Career change",status:"Completed"},
+  ];
+  return(
+    <div className="page-in">
+      <div className="tabs">
+        {["connect","values","pulse","exit"].map(t=>(
+          <div key={t} className={`tab ${tab===t?"active":""}`} onClick={()=>setTab(t)}>{t==="connect"?"Connect":t==="values"?"Company Values":t==="pulse"?"Engagement & Surveys":"Exit Interviews"}</div>
+        ))}
+      </div>
+
+      {tab==="connect"&&(
+        <div style={{display:"flex",flexDirection:"column",gap:12,maxWidth:640}}>
+          <div style={{display:"flex",justifyContent:"flex-end"}}><button className="btn btn-primary btn-sm">+ New Shout-out</button></div>
+          {posts.map((p,i)=>(
+            <div key={i} className="card card-bd">
+              <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:8}}>
+                <Av name={p.from} size={30} idx={p.fromIdx}/>
+                <div style={{fontSize:12.5}}><b>{p.from}</b> <span style={{color:C.textSub}}>recognised</span> <b>{p.to}</b></div>
+              </div>
+              <div style={{fontSize:12.5,color:C.text,marginBottom:8}}>{p.body}</div>
+              <span style={{fontSize:11.5,fontWeight:700,color:C.goldDark}}>♥ {p.kudos} kudos</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab==="values"&&(
+        <div className="g4">
+          {values.map(v=>(
+            <div key={v.title} className="card card-bd" style={{padding:16}}>
+              <div style={{fontSize:22,marginBottom:8}}>{v.icon}</div>
+              <div style={{fontWeight:800,fontSize:13,marginBottom:4}}>{v.title}</div>
+              <div style={{fontSize:11.5,color:C.textSub,lineHeight:1.5}}>{v.desc}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab==="pulse"&&(
+        <>
+          <div className="g4" style={{marginBottom:16}}>
+            {[{v:"78%",l:"Engagement Score",c:C.goldDark},{v:"84%",l:"Survey Participation",c:C.blue},{v:"+32",l:"eNPS",c:C.green},{v:"4.2/5",l:"Happiness Score",c:C.teal}].map(s=>(
+              <div key={s.l} className="stat-card"><div className="stat-val" style={{color:s.c}}>{s.v}</div><div className="stat-label">{s.l}</div></div>
+            ))}
+          </div>
+          <div className="g2">
+            <div className="card">
+              <div className="card-hd"><div className="card-title">Engagement Trend</div></div>
+              <div className="card-bd"><TrendChart data={[72,75,78]} color={C.accent}/></div>
+            </div>
+            <div className="card">
+              <div className="card-hd"><div className="card-title">Engagement Drivers</div></div>
+              <div className="card-bd">
+                {[{l:"Leadership",p:82,t:"↑ improving"},{l:"Wellbeing",p:74,t:"↑ improving"},{l:"Workload",p:61,t:"↓ watch"},{l:"Recognition",p:70,t:"→ steady"}].map(d=>(
+                  <div key={d.l} style={{marginBottom:12}}>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:4,fontSize:12}}><span style={{fontWeight:700}}>{d.l}</span><span style={{color:C.textSub}}>{d.t}</span></div>
+                    <PBar pct={d.p} color={C.accent}/>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {tab==="exit"&&(
+        <div className="card">
+          <table className="tbl">
+            <thead><tr><th>EMPLOYEE</th><th>DATE</th><th>REASON</th><th>STATUS</th></tr></thead>
+            <tbody>
+              {exits.map((e,i)=>(
+                <tr key={i}>
+                  <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={e.name} size={26} idx={e.idx}/><span style={{fontWeight:700}}>{e.name}</span></div></td>
+                  <td style={{fontSize:11.5,color:C.textSub}}>{e.date}</td>
+                  <td style={{color:C.textSub}}>{e.reason}</td>
+                  <td><span className="badge b-green">{e.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: DEVELOPMENT
+═══════════════════════════════════════════════════════════════════ */
+function PageDevelopment(){
+  const [tab,setTab]=useState("ones");
+  const ones=[
+    {emp:"Maryam Iqbal",idx:1,date:"9 Jul 2026",focus:"Term goals",status:"Scheduled"},
+    {emp:"Ahmed Khan",idx:3,date:"2 Jul 2026",focus:"Wellbeing",status:"Completed"},
+    {emp:"Rania Hadid",idx:4,date:"25 Jun 2026",focus:"Career growth",status:"Completed"},
+  ];
+  const feedback=[
+    {from:"Rania Hadid",fromIdx:4,to:"Fatima Nasser",type:"Praise",date:"1 Jul 2026"},
+    {from:"Maryam Iqbal",fromIdx:1,to:"Hassan Malik",type:"Praise",date:"28 Jun 2026"},
+    {from:"Fatima Nasser",fromIdx:2,to:"Omar Aziz",type:"Coaching",date:"20 Jun 2026"},
+  ];
+  return(
+    <div className="page-in">
+      <div className="tabs">
+        {["ones","feedback"].map(t=><div key={t} className={`tab ${tab===t?"active":""}`} onClick={()=>setTab(t)}>{t==="ones"?"1:1s":"Feedback"}</div>)}
+      </div>
+      {tab==="ones"&&(
+        <div className="card">
+          <div className="card-hd"><div className="card-title">Coaching Conversations</div><button className="btn btn-primary btn-sm">+ Schedule 1:1</button></div>
+          <table className="tbl">
+            <thead><tr><th>WITH</th><th>DATE</th><th>FOCUS</th><th>STATUS</th></tr></thead>
+            <tbody>
+              {ones.map((o,i)=>(
+                <tr key={i}>
+                  <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={o.emp} size={26} idx={o.idx}/><span style={{fontWeight:700}}>{o.emp}</span></div></td>
+                  <td style={{fontSize:11.5,color:C.textSub,fontFamily:"ui-monospace,monospace"}}>{o.date}</td>
+                  <td style={{color:C.textSub}}>{o.focus}</td>
+                  <td><span className={`badge ${o.status==="Completed"?"b-green":"b-blue"}`}>{o.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {tab==="feedback"&&(
+        <div className="card">
+          <div className="card-hd"><div className="card-title">Peer Feedback</div><button className="btn btn-primary btn-sm">+ Give Feedback</button></div>
+          <table className="tbl">
+            <thead><tr><th>FROM</th><th>TO</th><th>TYPE</th><th>DATE</th></tr></thead>
+            <tbody>
+              {feedback.map((f,i)=>(
+                <tr key={i}>
+                  <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={f.from} size={26} idx={f.fromIdx}/><span style={{fontWeight:700}}>{f.from}</span></div></td>
+                  <td style={{color:C.textSub}}>{f.to}</td>
+                  <td><span className={`badge ${f.type==="Praise"?"b-green":"b-amber"}`}>{f.type}</span></td>
+                  <td style={{fontSize:11.5,color:C.textSub}}>{f.date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: PERFORMANCE
+═══════════════════════════════════════════════════════════════════ */
+function PagePerformance(){
+  const [tab,setTab]=useState("goals");
+  const goals=[
+    {title:"Improve NAPLAN numeracy results",owner:"Maryam Iqbal",idx:1,pct:65,status:"In Progress"},
+    {title:"Complete VIT renewal",owner:"Ahmed Khan",idx:3,pct:100,status:"Completed"},
+    {title:"Launch student wellbeing program",owner:"Fatima Nasser",idx:2,pct:40,status:"In Progress"},
+  ];
+  const reviews360=[{emp:"Maryam Iqbal",idx:1,reviewers:4,cycle:"Mid-year 2026",status:"In Progress"},{emp:"Hassan Malik",idx:1,reviewers:3,cycle:"Mid-year 2026",status:"Completed"}];
+  const perfReviews=[{emp:"Fatima Nasser",idx:2,reviewer:"Rania Hadid",rating:"Exceeds",status:"Completed"},{emp:"Rania Hadid",idx:4,reviewer:"Principal",rating:"Meets",status:"In Progress"}];
+  const grid:Record<string,typeof EMPLOYEES>={};
+  const place=[["1-2",[1]],["2-2",[0]],["2-1",[2]],["0-1",[4]],["1-1",[3,5]]] as [string,number[]][];
+  place.forEach(([k,idxs])=>{grid[k]=idxs.map(i=>EMPLOYEES[i]);});
+  return(
+    <div className="page-in">
+      <div className="tabs">
+        {["goals","reviews360","reviews","ninebox"].map(t=>(
+          <div key={t} className={`tab ${tab===t?"active":""}`} onClick={()=>setTab(t)}>{t==="goals"?"Goals":t==="reviews360"?"360 Reviews":t==="reviews"?"Performance Reviews":"9-Box Talent Grid"}</div>
+        ))}
+      </div>
+
+      {tab==="goals"&&(
+        <div className="card">
+          <div className="card-hd"><div className="card-title">Goals</div><button className="btn btn-primary btn-sm">+ Add Goal</button></div>
+          <table className="tbl">
+            <thead><tr><th>GOAL</th><th>OWNER</th><th>PROGRESS</th><th>STATUS</th></tr></thead>
+            <tbody>
+              {goals.map((g,i)=>(
+                <tr key={i}>
+                  <td style={{fontWeight:700}}>{g.title}</td>
+                  <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={g.owner} size={24} idx={g.idx}/><span>{g.owner}</span></div></td>
+                  <td style={{width:150}}><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1}}><PBar pct={g.pct} color={g.pct===100?C.green:C.accent}/></div><span style={{fontSize:11,fontWeight:700,width:32}}>{g.pct}%</span></div></td>
+                  <td><span className={`badge ${g.status==="Completed"?"b-green":"b-amber"}`}>{g.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {tab==="reviews360"&&(
+        <div className="card">
+          <table className="tbl">
+            <thead><tr><th>EMPLOYEE</th><th>REVIEWERS</th><th>CYCLE</th><th>STATUS</th></tr></thead>
+            <tbody>
+              {reviews360.map((r,i)=>(
+                <tr key={i}>
+                  <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={r.emp} size={26} idx={r.idx}/><span style={{fontWeight:700}}>{r.emp}</span></div></td>
+                  <td>{r.reviewers}</td>
+                  <td style={{color:C.textSub}}>{r.cycle}</td>
+                  <td><span className={`badge ${r.status==="Completed"?"b-green":"b-amber"}`}>{r.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {tab==="reviews"&&(
+        <div className="card">
+          <table className="tbl">
+            <thead><tr><th>EMPLOYEE</th><th>REVIEWER</th><th>RATING</th><th>STATUS</th></tr></thead>
+            <tbody>
+              {perfReviews.map((r,i)=>(
+                <tr key={i}>
+                  <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={r.emp} size={26} idx={r.idx}/><span style={{fontWeight:700}}>{r.emp}</span></div></td>
+                  <td style={{color:C.textSub}}>{r.reviewer}</td>
+                  <td style={{fontWeight:700}}>{r.rating}</td>
+                  <td><span className={`badge ${r.status==="Completed"?"b-green":"b-amber"}`}>{r.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {tab==="ninebox"&&(
+        <div className="card">
+          <div className="card-hd"><div className="card-title">9-Box Talent Grid</div><div className="card-sub">Performance vs potential</div></div>
+          <div className="card-bd">
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+              {[2,1,0].flatMap(y=>[0,1,2].map(x=>{
+                const k=`${x}-${y}`,list=grid[k]||[],hot=x===2&&y===2;
+                return(
+                  <div key={k} style={{background:hot?C.greenBg:"#fafafa",border:`1px solid ${C.border}`,borderRadius:9,padding:8,minHeight:78}}>
+                    {list.map(e=><div key={e.id} className="badge b-maroon" style={{marginBottom:4,display:"block",width:"fit-content"}}>{e.name.split(" ")[0]}</div>)}
+                  </div>
+                );
+              }))}
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginTop:8,textAlign:"center",fontSize:11,color:C.textMute}}>
+              <span>Low performance</span><span>Solid</span><span>High performance</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: BENEFITS & PERKS
+═══════════════════════════════════════════════════════════════════ */
+function PageBenefits(){
+  const [tab,setTab]=useState("benefits");
+  const benefitsList=[
+    {icon:"💰",title:"Salary Packaging",desc:"Novated leases & FBT-exempt items",meta:"38 enrolled"},
+    {icon:"🛡",title:"Employee Assistance Program",desc:"Free confidential counselling",meta:"All staff"},
+    {icon:"🏅",title:"Professional Development Fund",desc:"$1,000 per teacher / yr",meta:"92 eligible"},
+    {icon:"🎁",title:"Health Insurance Discount",desc:"Corporate rate with partners",meta:"24 enrolled"},
+  ];
+  const perks=[
+    {icon:"🛒",title:"Woolworths",desc:"5% off gift cards",cat:"Groceries"},
+    {icon:"🎧",title:"JB Hi-Fi",desc:"10% off",cat:"Electronics"},
+    {icon:"🏋",title:"Fitness First",desc:"20% off membership",cat:"Health"},
+    {icon:"🎬",title:"Event Cinemas",desc:"30% off tickets",cat:"Entertainment"},
+  ];
+  return(
+    <div className="page-in">
+      <div className="tabs">
+        {["benefits","points","perks"].map(t=>(
+          <div key={t} className={`tab ${tab===t?"active":""}`} onClick={()=>setTab(t)}>{t==="benefits"?"Benefits Management":t==="points"?"Reward Points":"Perks Store"}</div>
+        ))}
+      </div>
+
+      {tab==="benefits"&&(
+        <div className="g4">
+          {benefitsList.map(b=>(
+            <div key={b.title} className="card card-bd" style={{padding:16}}>
+              <div style={{fontSize:22,marginBottom:8}}>{b.icon}</div>
+              <div style={{fontWeight:800,fontSize:13,marginBottom:4}}>{b.title}</div>
+              <div style={{fontSize:11.5,color:C.textSub,lineHeight:1.5,marginBottom:10,minHeight:34}}>{b.desc}</div>
+              <div style={{fontSize:10.5,color:C.textMute}}>{b.meta}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab==="points"&&(
+        <>
+          <div className="g3" style={{marginBottom:16}}>
+            {[{v:"4,250",l:"Org Balance",c:C.goldDark},{v:"1,100",l:"Issued This Month",c:C.blue},{v:"820",l:"Redeemed",c:C.green}].map(s=>(
+              <div key={s.l} className="stat-card"><div className="stat-val" style={{color:s.c}}>{s.v}</div><div className="stat-label">{s.l}</div></div>
+            ))}
+          </div>
+          <div className="card">
+            <div className="card-hd"><div className="card-title">Recent Recognition</div></div>
+            <table className="tbl">
+              <thead><tr><th>FROM</th><th>TO</th><th>POINTS</th><th>REASON</th></tr></thead>
+              <tbody>
+                {[{f:"Rania Hadid",fi:4,t:"Maryam Iqbal",p:50,r:"Above & beyond"},{f:"Ahmed Khan",fi:3,t:"Hassan Malik",p:25,r:"Yard duty cover"},{f:"Fatima Nasser",fi:2,t:"Omar Aziz",p:50,r:"Open day"}].map((row,i)=>(
+                  <tr key={i}>
+                    <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={row.f} size={24} idx={row.fi}/><span style={{fontWeight:700}}>{row.f}</span></div></td>
+                    <td style={{color:C.textSub}}>{row.t}</td>
+                    <td style={{fontWeight:800,color:C.goldDark}}>+{row.p}</td>
+                    <td style={{color:C.textSub}}>{row.r}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {tab==="perks"&&(
+        <div className="g4">
+          {perks.map(p=>(
+            <div key={p.title} className="card card-bd" style={{padding:16}}>
+              <div style={{fontSize:22,marginBottom:8}}>{p.icon}</div>
+              <div style={{fontWeight:800,fontSize:13,marginBottom:4}}>{p.title}</div>
+              <div style={{fontSize:11.5,color:C.textSub,marginBottom:10}}>{p.desc}</div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",paddingTop:10,borderTop:`1px solid ${C.border2}`}}>
+                <span className="badge b-gray" style={{fontSize:10}}>{p.cat}</span>
+                <button className="btn btn-accent btn-xs">Redeem →</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: BILLING
+═══════════════════════════════════════════════════════════════════ */
+function PageBilling(){
+  const [tab,setTab]=useState("subscriptions");
+  const invoices=[
+    {id:"INV-2026-07",date:"1 Jul 2026",amt:1988,status:"Paid"},
+    {id:"INV-2026-06",date:"1 Jun 2026",amt:1974,status:"Paid"},
+    {id:"INV-2026-05",date:"1 May 2026",amt:1960,status:"Paid"},
+  ];
+  return(
+    <div className="page-in">
+      <div className="tabs">
+        {["subscriptions","invoices"].map(t=><div key={t} className={`tab ${tab===t?"active":""}`} onClick={()=>setTab(t)}>{t==="subscriptions"?"Subscriptions":"Invoices"}</div>)}
+      </div>
+
+      {tab==="subscriptions"&&(
+        <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:16}}>
+          <div className="card">
+            <div className="card-hd"><div><div className="card-title">HRM Platform — Standard</div><div className="card-sub">Billed monthly · per active employee</div></div><span className="badge b-green">Active</span></div>
+            <div className="card-bd g3">
+              {[["Active Employees","218"],["Engine Licence","Per-employee"],["Next Invoice","1 Aug 2026"]].map(([k,v])=>(
+                <div key={k} style={{background:C.bg,borderRadius:10,padding:12}}><div style={{fontSize:10.5,color:C.textMute}}>{k}</div><div style={{fontSize:13,fontWeight:800,marginTop:3}}>{v}</div></div>
+              ))}
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-hd"><div className="card-title">Included</div></div>
+            <div className="card-bd" style={{display:"flex",flexDirection:"column",gap:8}}>
+              {["Unlimited pay runs","STP Phase 2 lodgement","Payday Super","Award & EA interpretation","Self-service pay slips"].map(x=>(
+                <div key={x} style={{display:"flex",gap:8,alignItems:"center",fontSize:12}}><span style={{color:C.green}}>✓</span>{x}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {tab==="invoices"&&(
+        <div className="card">
+          <table className="tbl">
+            <thead><tr><th>INVOICE</th><th>DATE</th><th>AMOUNT</th><th>STATUS</th><th></th></tr></thead>
+            <tbody>
+              {invoices.map(inv=>(
+                <tr key={inv.id}>
+                  <td style={{fontWeight:700,fontFamily:"ui-monospace,monospace"}}>{inv.id}</td>
+                  <td style={{color:C.textSub,fontSize:11.5}}>{inv.date}</td>
+                  <td style={{fontWeight:800}}>{money(inv.amt)}</td>
+                  <td><span className="badge b-green">{inv.status}</span></td>
+                  <td><button className="btn btn-ghost btn-xs">⬇ PDF</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
@@ -2794,6 +3711,18 @@ export default function App(){
     "doc-templates":    <PageDocTemplates/>,
     tasks:              <PageTasks/>,
     comms:              <PageComms/>,
+    "pay-runs":         <PagePayRuns/>,
+    stp:                <PageSTP/>,
+    super:              <PageSuper/>,
+    payslips:           <PagePaySlips/>,
+    "expense-claims":   <PageExpenseClaims/>,
+    "expenses-mgmt":    <PageExpensesManagement/>,
+    compensation:       <PageCompensation/>,
+    engagement:         <PageEngagement/>,
+    development:        <PageDevelopment/>,
+    performance:        <PagePerformance/>,
+    benefits:           <PageBenefits/>,
+    billing:            <PageBilling/>,
     "workflow-designer":<PageWorkflowDesigner/>,
     reporting:          <PageReporting/>,
     integrations:       <PageIntegrations/>,
@@ -2801,7 +3730,7 @@ export default function App(){
     audit:              <PageAudit/>,
   };
 
-  const meta=PAGE_META[page]||{title:(NAV.find(n=>n.id===page)||{}).label||page,sub:"Al Siraat College · Recruitment Tracker"};
+  const meta=PAGE_META[page]||{title:(NAV.find(n=>n.id===page)||{}).label||page,sub:"Al Siraat College · HRM Platform"};
 
   return(
     <>
@@ -2823,7 +3752,7 @@ export default function App(){
               </div>
             );
           })}
-          <div className="sb-foot">© 2026 Al Siraat College · Recruitment Tracker v2.0</div>
+          <div className="sb-foot">© 2026 Al Siraat College · HRM Platform v2.0</div>
         </div>
 
         {/* MAIN */}
