@@ -35,8 +35,11 @@ body{font-family:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;backgroun
 .sb-logo{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e7cd8f,#bf9a4d 60%,#8c6f30);display:flex;align-items:center;justify-content:center;color:#1a1422;font-weight:800;font-size:14px;flex-shrink:0;box-shadow:0 0 0 3px rgba(198,163,90,.16);}
 .sb-brand-text{color:#f4efe4;font-size:14px;font-weight:800;letter-spacing:.04em;line-height:1.1;}
 .sb-brand-sub{color:${C.accent};font-size:9px;font-weight:600;letter-spacing:.3em;margin-top:3px;text-transform:uppercase;}
-.sb-section{padding:16px 12px 7px 24px;font-size:9.5px;font-weight:700;letter-spacing:.18em;color:#6b6479;text-transform:uppercase;}
-.sb-item{display:flex;align-items:center;gap:11px;padding:9px 13px;cursor:pointer;color:#b9b3c6;font-size:13px;font-weight:600;border-radius:9px;margin:2px 12px;border:1px solid transparent;transition:all .16s;}
+.sb-section{display:flex;align-items:center;gap:8px;padding:12px 16px 12px 20px;font-size:9.5px;font-weight:700;letter-spacing:.18em;color:#8a839b;text-transform:uppercase;cursor:pointer;user-select:none;border-radius:8px;margin:1px 8px;transition:all .14s;}
+.sb-section:hover{color:#c9c2da;background:${C.sidebarHov};}
+.sb-section.open{color:${C.goldSoft};}
+.sb-chev{font-size:8px;color:inherit;opacity:.75;transition:transform .16s;flex-shrink:0;}
+.sb-item{display:flex;align-items:center;gap:11px;padding:9px 13px;cursor:pointer;color:#b9b3c6;font-size:13px;font-weight:600;border-radius:9px;margin:2px 12px 2px 20px;border:1px solid transparent;transition:all .16s;}
 .sb-item:hover{background:${C.sidebarHov};color:#e7e2f0;}
 .sb-item.active{background:rgba(198,163,90,.13);color:${C.goldSoft};border-color:rgba(198,163,90,.28);}
 .sb-dot{display:none;}
@@ -323,6 +326,13 @@ const NAV=[
   {id:"billing",          label:"Billing",               icon:"🏷"},
   {id:"audit",            label:"Audit Log",             icon:"🗒"},
 ];
+
+// Maps each item id to the section header it falls under, so the sidebar can collapse by section.
+const SECTION_OF: Record<string,string> = {};
+{
+  let cur = "";
+  NAV.forEach(it=>{ if(it.sec) cur = it.sec; else SECTION_OF[it.id] = cur; });
+}
 
 const PAGE_META={
   dashboard:         {title:"Recruitment Dashboard",       sub:"Pipeline overview · 2026–2027 hiring cycle"},
@@ -3691,9 +3701,16 @@ function PagePlaceholder({id}){
 ═══════════════════════════════════════════════════════════════════ */
 export default function App(){
   const [page,setPage]=useState("dashboard");
+  const [openSecs,setOpenSecs]=useState<Set<string>>(()=> new Set([SECTION_OF["dashboard"]]));
+  const toggleSec=(sec:string)=> setOpenSecs(prev=>{
+    const next=new Set(prev);
+    next.has(sec) ? next.delete(sec) : next.add(sec);
+    return next;
+  });
+  const goTo=(id:string)=>{ setPage(id); setOpenSecs(prev=>new Set(prev).add(SECTION_OF[id])); };
 
   const PAGES={
-    dashboard:          <PageDashboard nav={setPage}/>,
+    dashboard:          <PageDashboard nav={goTo}/>,
     positions:          <PagePositions/>,
     "job-ads":          <PageJobAds/>,
     candidates:         <PageCandidates/>,
@@ -3743,9 +3760,18 @@ export default function App(){
             <div><div className="sb-brand-text">Al Siraat</div><div className="sb-brand-sub">College</div></div>
           </div>
           {NAV.map((item,i)=>{
-            if(item.sec) return <div key={i} className="sb-section">{item.sec}</div>;
+            if(item.sec){
+              const open=openSecs.has(item.sec);
+              return (
+                <div key={i} className={`sb-section ${open?"open":""}`} onClick={()=>toggleSec(item.sec)}>
+                  <span style={{flex:1}}>{item.sec}</span>
+                  <span className="sb-chev">{open?"▾":"▸"}</span>
+                </div>
+              );
+            }
+            if(!openSecs.has(SECTION_OF[item.id])) return null;
             return(
-              <div key={item.id} className={`sb-item ${page===item.id?"active":""}`} onClick={()=>setPage(item.id)}>
+              <div key={item.id} className={`sb-item ${page===item.id?"active":""}`} onClick={()=>goTo(item.id)}>
                 <span className="sb-icon">{item.icon}</span>
                 <span style={{flex:1}}>{item.label}</span>
                 <div className="sb-dot"/>
