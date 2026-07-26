@@ -356,7 +356,7 @@ const PAGE_META={
   "my-leave":        {title:"My Leave",                     sub:"Request leave & track your balances"},
   "leave-mgmt":      {title:"Leave Management",              sub:"Approve requests · monitor coverage · track liability"},
   rostering:         {title:"Rostering Management",          sub:"Weekly staff roster · shift coverage"},
-  timesheets:        {title:"Timesheets Management",         sub:"Casual & part-time hours · approval for payroll"},
+  timesheets:        {title:"Timesheets Management",         sub:"Variable-hours & fixed-term staff · approval for payroll"},
   "pay-runs":        {title:"Pay Runs",                     sub:"Fortnightly payroll schedule · draft, review & lodge"},
   stp:               {title:"Single Touch Payroll",         sub:"Every pay event reported to the ATO · STP Phase 2"},
   super:             {title:"Super Payments",                sub:"Payday Super · contributions paid every pay day"},
@@ -409,13 +409,15 @@ const LEAVE=[
   {name:"Fatima Nasser",idx:2,type:"Personal / carer's",   dates:"26 Jun 2026",    days:1,  status:"Approved"},
 ];
 
+// Amounts sum to $49,512 — 12% SG on the current draft fortnight's gross ($412,600),
+// matching the super figure shown in the pay run wizard.
 const SUPER_FUNDS=[
-  {fund:"AustralianSuper",employees:62,amount:29760},
-  {fund:"Aware Super",    employees:58,amount:27840},
-  {fund:"HESTA",          employees:41,amount:19680},
-  {fund:"UniSuper",       employees:24,amount:11520},
-  {fund:"REST",           employees:20,amount:9600},
-  {fund:"Hostplus",       employees:13,amount:6240},
+  {fund:"AustralianSuper",employees:62,amount:14082},
+  {fund:"Aware Super",    employees:58,amount:13180},
+  {fund:"HESTA",          employees:41,amount:9310},
+  {fund:"UniSuper",       employees:24,amount:5450},
+  {fund:"REST",           employees:20,amount:4540},
+  {fund:"Hostplus",       employees:13,amount:2950},
 ];
 
 const money=(n:number)=>"$"+Math.round(n).toLocaleString("en-AU");
@@ -2811,7 +2813,7 @@ function PageTimesheets(){
   return(
     <div className="page-in">
       <div className="card" style={{marginBottom:16,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <div style={{fontSize:12.5,color:C.textSub}}>Week of 6 Jul 2026 · casual and part-time staff</div>
+        <div style={{fontSize:12.5,color:C.textSub}}>Week of 6 Jul 2026 · variable-hours staff</div>
         <span className="badge b-amber">3 awaiting approval</span>
       </div>
       <div className="card">
@@ -2845,7 +2847,7 @@ function PagePayRuns(){
   const [declared,setDeclared]=useState(false);
   const run=PAYRUNS[0];
   const steps=["Period","Earnings","Tax & Super","Review","Done"];
-  const gross=run.gross,payg=Math.round(gross*0.25),super_=Math.round(gross*0.115),net=gross-payg;
+  const gross=run.gross,payg=Math.round(gross*0.25),super_=Math.round(gross*0.12),net=gross-payg;
   const preview=EMPLOYEES.slice(0,6).map((e,i)=>({name:e.name,role:e.role,gross:Math.round((gross/run.emps)*(0.8+(i%3)*0.3)),warn:i===3}));
 
   const closeWizard=()=>{setWizard(false);setStep(1);setDeclared(false);};
@@ -2948,7 +2950,7 @@ function PagePayRuns(){
                   <div style={{display:"flex",justifyContent:"space-between",padding:"10px 0",fontSize:14}}><span style={{fontWeight:800}}>Net pay</span><span style={{fontWeight:800,color:C.greenDk}}>{money(net)}</span></div>
                   <div style={{background:"rgba(198,163,90,.1)",borderRadius:10,padding:12,display:"flex",gap:10,alignItems:"center",marginTop:8}}>
                     <span style={{fontSize:20}}>🏦</span>
-                    <div style={{flex:1}}><div style={{fontSize:12,fontWeight:800}}>Superannuation guarantee (11.5%)</div><div style={{fontSize:11,color:C.textSub}}>Paid to each fund on pay day under Payday Super.</div></div>
+                    <div style={{flex:1}}><div style={{fontSize:12,fontWeight:800}}>Superannuation guarantee (12%)</div><div style={{fontSize:11,color:C.textSub}}>Paid to each fund on pay day under Payday Super.</div></div>
                     <div style={{fontWeight:800,color:C.goldDark}}>{money(super_)}</div>
                   </div>
                 </div>
@@ -3046,7 +3048,7 @@ function PageSuper(){
         <div style={{marginLeft:"auto"}}><button className="btn btn-primary">✉ Pay Super Batch</button></div>
       </FiltersRow>
       <div className="g3" style={{marginBottom:16}}>
-        {[{v:money(total),l:"Due This Cycle",c:C.goldDark},{v:"11.5% SG",l:"Statutory Rate",c:C.green},{v:`${SUPER_FUNDS.length} Funds`,l:"Funds Paid",c:C.amber}].map(s=>(
+        {[{v:money(total),l:"Due This Cycle",c:C.goldDark},{v:"12% SG",l:"Statutory Rate",c:C.green},{v:`${SUPER_FUNDS.length} Funds`,l:"Funds Paid",c:C.amber}].map(s=>(
           <div key={s.l} className="stat-card"><div className="stat-val" style={{color:s.c}}>{s.v}</div><div className="stat-label">{s.l}</div></div>
         ))}
       </div>
