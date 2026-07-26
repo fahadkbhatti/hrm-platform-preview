@@ -2241,8 +2241,11 @@ function PageEmployees(){
           <div key={s.l} className="stat-card"><div className="stat-val" style={{color:s.c}}>{s.v}</div><div className="stat-label">{s.l}</div></div>
         ))}
       </div>
-      <div className="tabs">
-        {["profiles","por","arrangements"].map(t=><div key={t} className={`tab ${tab===t?"active":""}`} onClick={()=>setTab(t)}>{t==="profiles"?"Employee Directory":t==="por"?"Positions of Responsibility":"Employment Arrangements"}</div>)}
+      <div className="tabs" style={{overflowX:"auto"}}>
+        {["profiles","por","arrangements","orgchart","calendar","contractors","fileapprovals","vacancies"].map(t=><div key={t} className={`tab ${tab===t?"active":""}`} style={{whiteSpace:"nowrap"}} onClick={()=>setTab(t)}>{
+          t==="profiles"?"Employee Directory":t==="por"?"Positions of Responsibility":t==="arrangements"?"Employment Arrangements":
+          t==="orgchart"?"Org Chart":t==="calendar"?"Calendar":t==="contractors"?"Contractors":t==="fileapprovals"?"File Approvals":"Vacancies & Requisitions"
+        }</div>)}
       </div>
       {tab==="profiles"&&(
         <div className="card">
@@ -2305,6 +2308,135 @@ function PageEmployees(){
                   <td style={{fontSize:11.5,fontFamily:"ui-monospace,monospace"}}>{a.eff}</td>
                   <td><div style={{display:"flex",gap:4,flexWrap:"wrap"}}>{a.notified.map(n=><span key={n} className="badge b-blue" style={{fontSize:10}}>{n}</span>)}</div></td>
                   <td><span className={`badge ${a.status==="Approved"?"b-green":"b-amber"}`}>{a.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {tab==="orgchart"&&(()=>{
+        const byMgr:Record<string,typeof EMPLOYEES>={};
+        emps.forEach(e=>{ (byMgr[e.mgr]=byMgr[e.mgr]||[]).push(e); });
+        return (
+          <div className="card" style={{padding:32}}>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:20}}>
+              <div className="card-bd" style={{background:C.sidebar,color:"#fff",borderRadius:12,padding:"10px 18px",textAlign:"center"}}>
+                <div style={{fontWeight:800,fontSize:13}}>Al Siraat College</div>
+                <div style={{fontSize:11,opacity:.75}}>Principal's Office</div>
+              </div>
+              <div style={{width:1,height:16,background:C.border}}/>
+              <div style={{display:"flex",flexWrap:"wrap",justifyContent:"center",gap:28}}>
+                {Object.entries(byMgr).map(([mgr,list])=>(
+                  <div key={mgr} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}}>
+                    <div className="card-bd" style={{border:`1px solid ${C.border}`,borderRadius:10,padding:"7px 14px",textAlign:"center",fontSize:11.5,fontWeight:700,color:C.textSub,minWidth:140}}>{mgr}</div>
+                    <div style={{width:1,height:12,background:C.border}}/>
+                    <div style={{display:"flex",flexWrap:"wrap",justifyContent:"center",gap:8,maxWidth:220}}>
+                      {list.map(e=>(
+                        <div key={e.id} className="card-bd" style={{border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 12px",textAlign:"center",minWidth:130}}>
+                          <div style={{fontWeight:700,fontSize:12}}>{e.name}</div>
+                          <div style={{fontSize:10.5,color:C.textMute}}>{e.role}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+      {tab==="calendar"&&(()=>{
+        const days=Array.from({length:31},(_,i)=>i+1);
+        const marks:Record<number,[string,string]>={3:["Leave",C.amber],8:["Leave",C.amber],9:["Leave",C.amber],10:["Leave",C.amber],20:["PD day",C.accent],24:["Leave",C.green]};
+        return (
+          <div className="card" style={{padding:16}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <div className="card-title" style={{fontSize:13}}>Team Calendar — July 2026</div>
+              <div style={{display:"flex",gap:14,fontSize:11,color:C.textSub}}>
+                <span style={{display:"inline-flex",alignItems:"center",gap:5}}><span style={{width:8,height:8,borderRadius:"50%",background:C.amber,display:"inline-block"}}/>Leave</span>
+                <span style={{display:"inline-flex",alignItems:"center",gap:5}}><span style={{width:8,height:8,borderRadius:"50%",background:C.accent,display:"inline-block"}}/>PD / event</span>
+              </div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,marginBottom:4}}>
+              {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=><div key={d} style={{textAlign:"center",fontSize:11,fontWeight:700,color:C.textMute,padding:"4px 0"}}>{d}</div>)}
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4}}>
+              {[0,1].map(i=><div key={"b"+i}/>)}
+              {days.map(d=>{
+                const m=marks[d]; const col=(d+1)%7; const we=col===5||col===6;
+                return (
+                  <div key={d} style={{height:64,borderRadius:8,background:we?C.bg:C.surface,border:`1px solid ${C.border}`,padding:6}}>
+                    <div style={{fontSize:11,fontWeight:700,color:C.textSub}}>{d}</div>
+                    {m&&<div style={{marginTop:4,borderRadius:5,padding:"2px 5px",fontSize:10,background:`${m[1]}22`,color:m[1]}}>{m[0]}</div>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+      {tab==="contractors"&&(
+        <div className="card">
+          <div className="card-hd"><div><div className="card-title">Contractor Employees</div><div className="card-sub">Contractors & employer-of-record staff</div></div><button className="btn btn-primary btn-sm">+ Add Contractor</button></div>
+          <table className="tbl">
+            <thead><tr><th>CONTRACTOR</th><th>ENGAGEMENT</th><th>ABN</th><th>RATE</th><th>STATUS</th></tr></thead>
+            <tbody>
+              {[
+                {name:"Relief Teaching Pool",sub:"Casual relief",eng:"Labour hire",rate:"$62 / hr"},
+                {name:"CleanCo Services",sub:"Contract cleaning",eng:"Service contract",rate:"$1,200 / wk"},
+                {name:"Mark Lee",sub:"ICT consultant",eng:"Independent contractor",rate:"$95 / hr"},
+              ].map((c,i)=>(
+                <tr key={i}>
+                  <td><div style={{fontWeight:700}}>{c.name}</div><div style={{fontSize:10.5,color:C.textMute}}>{c.sub}</div></td>
+                  <td style={{color:C.textSub}}>{c.eng}</td>
+                  <td style={{fontFamily:"ui-monospace,monospace",fontSize:11.5,color:C.textMute}}>•• ••• ••• •••</td>
+                  <td style={{fontWeight:700}}>{c.rate}</td>
+                  <td><span className="badge b-green">Active</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {tab==="fileapprovals"&&(
+        <div className="card">
+          <div className="card-hd"><div><div className="card-title">Employee File Approvals</div><div className="card-sub">Review changes to employee records</div></div></div>
+          <table className="tbl">
+            <thead><tr><th>EMPLOYEE</th><th>CHANGE REQUESTED</th><th>REQUESTED</th><th>ACTION</th></tr></thead>
+            <tbody>
+              {[
+                {emp:EMPLOYEES[3],change:"Bank account update",date:"2 Jul 2026"},
+                {emp:EMPLOYEES[5],change:"Address change",date:"1 Jul 2026"},
+                {emp:EMPLOYEES[2],change:"Tax file declaration",date:"30 Jun 2026"},
+              ].map((r,i)=>(
+                <tr key={i}>
+                  <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={r.emp.name} size={26} idx={r.emp.idx}/><span style={{fontWeight:700}}>{r.emp.name}</span></div></td>
+                  <td style={{color:C.textSub}}>{r.change}</td>
+                  <td style={{fontSize:11.5,fontFamily:"ui-monospace,monospace",color:C.textMute}}>{r.date}</td>
+                  <td><div style={{display:"flex",gap:6}}><button className="btn btn-success btn-xs">Approve</button><button className="btn btn-secondary btn-xs">Decline</button></div></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {tab==="vacancies"&&(
+        <div className="card">
+          <div className="card-hd"><div><div className="card-title">Vacancies & Requisitions</div><div className="card-sub">Open roles and hiring requests</div></div><button className="btn btn-primary btn-sm">+ New Requisition</button></div>
+          <table className="tbl">
+            <thead><tr><th>ROLE</th><th>DEPARTMENT</th><th>TYPE</th><th>APPLICANTS</th><th>STATUS</th></tr></thead>
+            <tbody>
+              {[
+                {role:"Secondary Teacher — Science",dept:"Secondary",type:"Full-time",apps:12,status:"Open"},
+                {role:"Teacher Aide",dept:"Primary",type:"Part-time",apps:5,status:"Open"},
+                {role:"Bus Driver",dept:"Operations",type:"Casual",apps:3,status:"In Review"},
+              ].map((r,i)=>(
+                <tr key={i}>
+                  <td style={{fontWeight:700}}>{r.role}</td>
+                  <td style={{color:C.textSub}}>{r.dept}</td>
+                  <td><span className="badge b-gray">{r.type}</span></td>
+                  <td>{r.apps}</td>
+                  <td><span className={`badge ${r.status==="Open"?"b-green":"b-amber"}`}>{r.status}</span></td>
                 </tr>
               ))}
             </tbody>
