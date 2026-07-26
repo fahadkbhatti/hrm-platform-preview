@@ -304,6 +304,11 @@ const NAV=[
   {id:"doc-templates",    label:"Document Templates",    icon:"📝"},
   {id:"tasks",            label:"Tasks & Acknowledgements",icon:"✅"},
   {id:"comms",            label:"Communications",        icon:"💬"},
+  {sec:"TIME"},
+  {id:"my-leave",         label:"My Leave",               icon:"🌴"},
+  {id:"leave-mgmt",       label:"Leave Management",       icon:"🗃"},
+  {id:"rostering",        label:"Rostering Management",   icon:"🕐"},
+  {id:"timesheets",       label:"Timesheets Management",  icon:"⏱"},
   {sec:"PAYROLL"},
   {id:"pay-runs",         label:"Pay Runs",               icon:"💵"},
   {id:"stp",              label:"Single Touch Payroll",   icon:"📡"},
@@ -348,6 +353,10 @@ const PAGE_META={
   onboarding:        {title:"Onboarding Workflows",         sub:"New starter checklist · tax · super · IT provisioning"},
   induction:         {title:"Induction & Training",         sub:"Mandatory training dashboard · completion tracking · certificates"},
   compliance:        {title:"Compliance Tracking",          sub:"WWCC · VIT · Visa · First Aid · risk dashboard · audit trail"},
+  "my-leave":        {title:"My Leave",                     sub:"Request leave & track your balances"},
+  "leave-mgmt":      {title:"Leave Management",              sub:"Approve requests · monitor coverage · track liability"},
+  rostering:         {title:"Rostering Management",          sub:"Weekly staff roster · shift coverage"},
+  timesheets:        {title:"Timesheets Management",         sub:"Casual & part-time hours · approval for payroll"},
   "pay-runs":        {title:"Pay Runs",                     sub:"Fortnightly payroll schedule · draft, review & lodge"},
   stp:               {title:"Single Touch Payroll",         sub:"Every pay event reported to the ATO · STP Phase 2"},
   super:             {title:"Super Payments",                sub:"Payday Super · contributions paid every pay day"},
@@ -390,6 +399,14 @@ const PAYRUNS=[
   {period:"Fortnight ending 14 Jun 2026",pay:"16 Jun 2026",status:"STP Lodged",emps:215,gross:407200},
   {period:"Fortnight ending 31 May 2026",pay:"02 Jun 2026",status:"STP Lodged",emps:214,gross:404900},
   {period:"Fortnight ending 17 May 2026",pay:"19 May 2026",status:"STP Lodged",emps:214,gross:403100},
+];
+
+const LEAVE=[
+  {name:"Omar Aziz",   idx:5, type:"Annual leave",         dates:"8–19 Jul 2026",  days:10, status:"Pending"},
+  {name:"Hassan Malik",idx:1, type:"Personal / carer's",   dates:"3 Aug 2026",     days:1,  status:"Pending"},
+  {name:"Rania Hadid", idx:4, type:"Long service leave",   dates:"1–12 Sep 2026",  days:10, status:"Pending"},
+  {name:"Maryam Iqbal",idx:1, type:"Annual leave",         dates:"22–26 Sep 2026", days:5,  status:"Approved"},
+  {name:"Fatima Nasser",idx:2,type:"Personal / carer's",   dates:"26 Jun 2026",    days:1,  status:"Approved"},
 ];
 
 const SUPER_FUNDS=[
@@ -2543,6 +2560,151 @@ function Stepper({step,steps}:{step:number;steps:string[]}){
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   PAGE: MY LEAVE
+═══════════════════════════════════════════════════════════════════ */
+function PageMyLeave(){
+  const bals=[["Annual leave","14.2 days",.71,C.accent],["Personal / carer's","8.6 days",.5,C.blue],["Long service","31.0 days",.31,C.green]];
+  const rows=[["Annual leave","22–26 Sep 2026",5,"Approved"],["Personal / carer's","3 Aug 2026",1,"Pending"],["Annual leave","2–6 Jun 2026",5,"Approved"],["Personal / carer's","14 Apr 2026",1,"Approved"]];
+  return(
+    <div className="page-in">
+      <div className="g3" style={{marginBottom:16}}>
+        {bals.map(([l,v,p,col])=>(
+          <div key={l as string} className="card card-bd">
+            <div style={{fontSize:12,color:C.textSub}}>{l}</div>
+            <div className="mt-1" style={{fontSize:20,fontWeight:800,color:C.text,marginTop:4}}>{v}</div>
+            <div style={{marginTop:10}}><PBar pct={(p as number)*100} color={col as string}/></div>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-hd"><div className="card-title">My Leave Requests</div><button className="btn btn-primary btn-sm">+ Request Leave</button></div>
+        <table className="tbl">
+          <thead><tr><th>TYPE</th><th>DATES</th><th>DAYS</th><th>STATUS</th></tr></thead>
+          <tbody>
+            {rows.map((r,i)=>(
+              <tr key={i}>
+                <td style={{fontWeight:700}}>{r[0]}</td>
+                <td style={{color:C.textSub}}>{r[1]}</td>
+                <td>{r[2]}</td>
+                <td><span className={`badge ${r[3]==="Approved"?"b-green":"b-amber"}`}>{r[3]}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: LEAVE MANAGEMENT
+═══════════════════════════════════════════════════════════════════ */
+function PageLeaveMgmt(){
+  const [tab,setTab]=useState("pending");
+  const rows=tab==="pending"?LEAVE.filter(l=>l.status==="Pending"):LEAVE;
+  const stats=[
+    {v:LEAVE.filter(l=>l.status==="Pending").length,l:"Pending Approval",c:C.amber},
+    {v:2,l:"On Leave Today",c:C.blue},
+    {v:LEAVE.filter(l=>l.status==="Approved").length,l:"Approved This Month",c:C.green},
+    {v:money(184200),l:"Leave Liability",c:C.goldDark},
+  ];
+  return(
+    <div className="page-in">
+      <div className="g4" style={{marginBottom:16}}>
+        {stats.map(s=>(<div key={s.l} className="stat-card"><div className="stat-val" style={{color:s.c}}>{s.v}</div><div className="stat-label">{s.l}</div></div>))}
+      </div>
+      <div className="tabs">
+        {["pending","all"].map(t=>(
+          <div key={t} className={`tab ${tab===t?"active":""}`} onClick={()=>setTab(t)}>{t==="pending"?"Pending Approval":"All Requests"}</div>
+        ))}
+      </div>
+      <div className="card">
+        <table className="tbl">
+          <thead><tr><th>EMPLOYEE</th><th>TYPE</th><th>DATES</th><th>DAYS</th><th>STATUS</th><th></th></tr></thead>
+          <tbody>
+            {rows.map((l,i)=>(
+              <tr key={i}>
+                <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={l.name} size={26} idx={l.idx}/><span style={{fontWeight:700}}>{l.name}</span></div></td>
+                <td style={{color:C.textSub}}>{l.type}</td>
+                <td style={{color:C.textSub}}>{l.dates}</td>
+                <td>{l.days}</td>
+                <td><span className={`badge ${l.status==="Approved"?"b-green":"b-amber"}`}>{l.status}</span></td>
+                <td className="text-right">{l.status==="Pending"&&<div style={{display:"inline-flex",gap:8}}><button className="btn btn-primary btn-xs" style={{background:C.green}}>Approve</button><button className="btn btn-sm" style={{background:C.bg,color:C.textSub}}>Decline</button></div>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: ROSTERING MANAGEMENT
+═══════════════════════════════════════════════════════════════════ */
+function PageRoster(){
+  const days=["Mon","Tue","Wed","Thu","Fri"];
+  const pos=[["Front Office","8:00–4:00"],["Library","9:00–3:00"],["Grounds","7:00–3:00"],["Canteen","10:00–2:00"],["Bus Supervision","3:00–4:00"]];
+  return(
+    <div className="page-in">
+      <div className="card">
+        <div className="card-hd"><div className="card-title">Weekly Roster — Week of 6 Jul 2026</div><button className="btn btn-primary btn-sm">Publish Roster</button></div>
+        <table className="tbl">
+          <thead><tr><th>POSITION</th>{days.map(d=><th key={d} className="text-center">{d.toUpperCase()}</th>)}</tr></thead>
+          <tbody>
+            {pos.map(([p,t],i)=>(
+              <tr key={i}>
+                <td><div style={{fontWeight:700}}>{p}</div><div style={{fontSize:11,color:C.textMute}}>{t}</div></td>
+                {days.map((d,j)=>{
+                  const e=EMPLOYEES[(i+j)%EMPLOYEES.length];
+                  return (i+j)%4!==3
+                    ? <td key={j} className="text-center"><span className="badge b-blue" style={{fontSize:10.5}}>{e.name.split(" ")[0]}</span></td>
+                    : <td key={j} className="text-center" style={{color:C.textMute}}>—</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE: TIMESHEETS MANAGEMENT
+═══════════════════════════════════════════════════════════════════ */
+function PageTimesheets(){
+  const days=["Mon","Tue","Wed","Thu","Fri"];
+  const rows=EMPLOYEES.filter(e=>e.type!=="Ongoing").slice(0,5);
+  return(
+    <div className="page-in">
+      <div className="card" style={{marginBottom:16,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <div style={{fontSize:12.5,color:C.textSub}}>Week of 6 Jul 2026 · casual and part-time staff</div>
+        <span className="badge b-amber">3 awaiting approval</span>
+      </div>
+      <div className="card">
+        <table className="tbl">
+          <thead><tr><th>EMPLOYEE</th>{days.map(d=><th key={d} className="text-center">{d.toUpperCase()}</th>)}<th className="text-right">TOTAL</th></tr></thead>
+          <tbody>
+            {rows.map((e,i)=>{
+              const hrs=[7.6,7.6,i%2?4:7.6,7.6,i%3?6:7.6];
+              const total=hrs.reduce((a,b)=>a+b,0);
+              return (
+                <tr key={i}>
+                  <td><div style={{display:"flex",alignItems:"center",gap:8}}><Av name={e.name} size={26} idx={e.idx}/><span style={{fontWeight:700}}>{e.name}</span></div></td>
+                  {hrs.map((h,j)=><td key={j} className="text-center" style={{color:C.textSub}}>{h.toFixed(1)}</td>)}
+                  <td className="text-right" style={{fontWeight:800}}>{total.toFixed(1)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    PAGE: PAY RUNS
 ═══════════════════════════════════════════════════════════════════ */
 function PagePayRuns(){
@@ -3728,6 +3890,10 @@ export default function App(){
     "doc-templates":    <PageDocTemplates/>,
     tasks:              <PageTasks/>,
     comms:              <PageComms/>,
+    "my-leave":         <PageMyLeave/>,
+    "leave-mgmt":       <PageLeaveMgmt/>,
+    rostering:          <PageRoster/>,
+    timesheets:         <PageTimesheets/>,
     "pay-runs":         <PagePayRuns/>,
     stp:                <PageSTP/>,
     super:              <PageSuper/>,
